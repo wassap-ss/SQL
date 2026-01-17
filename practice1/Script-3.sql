@@ -1,0 +1,2 @@
+SELECT * FROM country LIMIT 10
+;
