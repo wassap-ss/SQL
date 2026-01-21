@@ -8,9 +8,8 @@ SET search_path TO public;
 --Выведите уникальные названия городов из таблицы городов.
 --В результирующей таблице должны быть следующие столбцы: название города.
 
-
-
-
+select distinct city
+from city
 
 
 --ЗАДАНИЕ №2
@@ -18,9 +17,9 @@ SET search_path TO public;
 --названия которых начинаются на “L” и заканчиваются на “a”, и названия не содержат пробелов.
 --В результирующей таблице должны быть следующие столбцы: название города.
 
-
-
-
+select distinct city
+from city
+where city like 'L%a' and city not like '% %'
 
 
 --ЗАДАНИЕ №3
@@ -29,17 +28,19 @@ SET search_path TO public;
 --стоимость которых превышает 1.00. Платежи нужно отсортировать по дате платежа.
 --В результирующей таблице должны быть следующие столбцы: идентификатор платежа, размер платежа, дата платежа.
 
-
-
+select payment_id, amount, payment_date
+from payment
+where payment_date between '2005.06.17' and '2005.06.20' and amount > 1
+order by payment_date 
 
 
 --ЗАДАНИЕ №4
 --Выведите информацию о 10-ти последних платежах за прокат фильмов.
 --В результирующей таблице должны быть следующие столбцы: все столбцы из таблицы.
 
-
-
-
+select *
+from payment
+order by payment_date desc
 
 
 --ЗАДАНИЕ №5
@@ -50,7 +51,12 @@ SET search_path TO public;
 --  4. Дату последнего обновления записи о покупателе (без времени)
 --В результирующей таблице должны быть следующие столбцы: столбцы согласно условия задания. Каждой колонке задайте алиасы на русском языке.
 
-
+select 
+	concat_ws(' ', first_name, last_name) as "Имя Фамилия", 
+	email as "Почтовый аддрес", 
+	length(email) as "Длина поля Почтовый адрес",
+	cast(last_update as date) as "Дата последнего обновления" 
+from customer
 
 
 --ЗАДАНИЕ №6
@@ -58,9 +64,9 @@ SET search_path TO public;
 --Все буквы в фамилии и имени из верхнего регистра должны быть переведены в нижний регистр.
 --В результирующей таблице должны быть следующие столбцы: имя и фамилия пользователя в нижнем регистре и флаг активности
 
-
-
-
+select lower(first_name), lower(last_name), activebool, active
+from customer
+where first_name in ('KELLY','WILLIE') and activebool is true
 
 
 --======== ДОПОЛНИТЕЛЬНАЯ ЧАСТЬ ==============
@@ -70,14 +76,20 @@ SET search_path TO public;
 --0.00 до 3.00 включительно, а также фильмы c рейтингом “PG-13” и стоимостью аренды больше или равной 4.00.
 --В результирующей таблице должны быть следующие столбцы: название фильма, рейтинг, стоимость аренды.
 
-
+select title, rating, rental_rate 
+from film
+where (rating::text = 'R' and rental_rate between '0.00' and '3.00') 
+    or (rating::text = 'PG-13' and rental_rate >= '4.00')
 
 
 --ЗАДАНИЕ №2
 --Получите информацию о трёх фильмах с самым длинным описанием фильма.
 --В результирующей таблице должны быть следующие столбцы: название фильма, описание, количество символов в описании.
 
-
+select title, description, length(description) as description_length
+from film
+order by description_length desc
+limit 10
 
 
 --ЗАДАНИЕ №3
@@ -86,13 +98,18 @@ SET search_path TO public;
 --во второй колонке должно быть значение, указанное после @.
 --В результирующей таблице должны быть следующие столбцы: email, имя почтового ящика, домен.
 
-
-
+select email,
+	split_part(email, '@', 1) as mailbox_name,
+	split_part(email, '@', 2) as mailbox_domain
+from customer
 
 --ЗАДАНИЕ №4
 --Доработайте запрос из предыдущего задания, скорректируйте значения в новых колонках: 
 --первая буква строки должна быть заглавной, остальные строчными.
 --В результирующей таблице должны быть следующие столбцы: email, имя почтового ящика, домен.
 
-
+select upper(substr(email, 1 ,1)) || lower(substr(email, 2)) as email,
+	upper(substr(split_part(email, '@', 1), 1, 1)) || lower(substr(split_part(email, '@', 1), 2)) as mailbox_name,
+	upper(substr(split_part(email, '@', 2), 1, 1)) || lower(substr(split_part(email, '@',2), 2)) as mailbox_domain
+from customer
 
