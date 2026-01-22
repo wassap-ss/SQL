@@ -41,6 +41,7 @@ order by payment_date
 select *
 from payment
 order by payment_date desc
+limit 10
 
 
 --ЗАДАНИЕ №5
@@ -89,7 +90,7 @@ where (rating::text = 'R' and rental_rate between '0.00' and '3.00')
 select title, description, length(description) as description_length
 from film
 order by description_length desc
-limit 10
+limit 3
 
 
 --ЗАДАНИЕ №3
