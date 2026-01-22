@@ -30,8 +30,8 @@ where city like 'L%a' and city not like '% %'
 
 select payment_id, amount, payment_date
 from payment
-where payment_date between '2005.06.17' and '2005.06.20' and amount > 1
-order by payment_date 
+where payment_date between '2005.06.17 00:00:00' and '2005.06.19 23:59:59' and amount > 1
+order by payment_date
 
 
 --ЗАДАНИЕ №4
