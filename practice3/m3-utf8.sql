@@ -50,7 +50,7 @@ JOIN customer cus ON s.store_id = cus.store_id
 JOIN staff stf ON s.manager_staff_id = stf.staff_id
 JOIN address ad ON s.address_id = ad.address_id
 JOIN city ci ON ad.city_id = ci.city_id
-GROUP BY s.store_id, stf.last_name, stf.first_name, ci.city
+GROUP BY s.store_id, stf.staff_id, ci.city_id
 HAVING COUNT(cus.customer_id) > 300
 ORDER BY store_users DESC;
 
