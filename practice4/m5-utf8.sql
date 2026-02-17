@@ -66,25 +66,31 @@ FROM
 ORDER BY 
     customer_id, payment_date
 
-
+/* столбец next_amount со значением null означает отсвутсввие платежа и как следсвтие дифф тоже нал */
 
 --ЗАДАНИЕ №4
 --С помощью оконной функции для каждого покупателя выведите данные о его последней оплате аренды.
 --В результирующей таблице должны быть следующие столбцы: Все столбцы из таблицы с платежами.
 
+WITH last_payment as (
+    SELECT *,
+        ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY payment_date DESC) as row_numb
+    FROM 
+        payment
+)
 SELECT 
     payment_id,
-    payment_date,
     customer_id,
-    amount as current_amount,
-    LEAD(amount) OVER (PARTITION BY customer_id ORDER BY payment_date) as next_amount,
-    amount - LEAD(amount) OVER (PARTITION BY customer_id ORDER BY payment_date) as difference
+    staff_id,
+    rental_id,
+    amount,
+    payment_date
 FROM 
-    payment
+    last_payment
+WHERE 
+    row_numb = 1
 ORDER BY 
-    customer_id, payment_date
-
-/* столбец next_amount со значением null означает отсвутсввие платежа и как следсвтие дифф тоже нал */
+    customer_id
 
 
 --======== ДОПОЛНИТЕЛЬНАЯ ЧАСТЬ ==============
