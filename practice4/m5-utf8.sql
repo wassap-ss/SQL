@@ -39,13 +39,11 @@ ORDER BY customer_id, payment_date
 SELECT 
     payment_id,
     payment_date,
-     customer_id,
+    customer_id,
     amount as current_amount,
-    COALESCE(LAG(amount) OVER (PARTITION BY customer_id ORDER BY payment_date), 0.0) as previous_amount
-FROM 
-    payment
-ORDER BY 
-    customer_id, payment_date
+    LAG(amount, 1, 0.0) OVER (PARTITION BY customer_id ORDER BY payment_date) as previous_amount
+FROM payment
+ORDER BY customer_id, payment_date
 
 
 --ЗАДАНИЕ №3
